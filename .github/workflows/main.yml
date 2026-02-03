@@ -20,7 +20,7 @@ jobs:
       - name: Install dependencies
         run: |
           brew update
-          brew install curl unzip
+          brew install unzip
 
       - name: Build RetroArch iOS (no codesign)
         env:
