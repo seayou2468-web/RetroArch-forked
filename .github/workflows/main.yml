@@ -22,12 +22,6 @@ jobs:
           brew update
           brew install curl unzip
 
-      - name: Update libretro cores (iOS all)
-        run: |
-          cd pkg/apple
-          chmod +x update-cores.sh
-          ./update-cores.sh ios all
-
       - name: Build RetroArch iOS (no codesign)
         env:
           NOCODESIGN: 1
