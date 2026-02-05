@@ -2608,7 +2608,19 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_VIDEO_HDR_EXPAND_GAMUT,
-   "Använder skärmens hela färgskala för att skapa en ljusare och mer mättad bild. För färger som är mer trogna det ursprungliga speldesignen, ställ in detta på AV."
+   "Använder skärmens hela färgskala för att skapa en ljusare och mer mättad bild. För färger som är mer trogna den ursprungliga speldesignen, ange detta till NOGGRANN."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_VIDEO_HDR_EXPAND_GAMUT_ACCURATE,
+   "NOGGRANN"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_VIDEO_HDR_EXPAND_GAMUT_EXPANDED,
+   "EXPANDERAD"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_VIDEO_HDR_EXPAND_GAMUT_WIDE,
+   "BRED"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_VIDEO_HDR_SCANLINES,
@@ -7075,6 +7087,14 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_SUBLABEL_AI_SERVICE_MODE,
    "Visa översättningen som ett textöverlägg (Bildläge), spela upp som text-till-tal (Tal) eller använd en systemberättare som NVDA (Berättare)."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_AI_SERVICE_BACKEND,
+   "Bakände för AI-tjänst"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_AI_SERVICE_BACKEND,
+   "Välj vilken översättningsbakände att använda. HTTP använder en fjärrserver på den konfigurerade webbadressen. Apple använder OCR-enhet och översättning (macOS/iOS)."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_AI_SERVICE_URL,
@@ -15728,7 +15748,7 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_SMB_CLIENT_ENABLE,
-   "Aktivera nätverksåtkomst för SMB-utdelning. Ethernet rekommenderas starkt istället för Wi-Fi för en mer tillförlitlig anslutning."
+   "Aktivera nätverksåtkomst för SMB-utdelning. Ethernet rekommenderas starkt över Wi-Fi för en mer tillförlitlig anslutning. Observera: ändring av dessa inställningar kräver en omstart av RetroArch."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_SMB_CLIENT_SERVER,

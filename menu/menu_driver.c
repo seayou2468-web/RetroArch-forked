@@ -2785,6 +2785,7 @@ int menu_shader_manager_clear_num_passes(struct video_shader *shader)
       menu_st->flags             |=  MENU_ST_FLAG_ENTRIES_NEED_REFRESH;
       video_shader_resolve_parameters(shader);
       shader->flags              |= SHDR_FLAG_MODIFIED;
+      command_event(CMD_EVENT_SHADERS_APPLY_CHANGES, NULL);
    }
 
    return 0;
@@ -8262,6 +8263,7 @@ bool menu_input_dialog_start_search(void)
    ios_keyboard_start(
          (char **)menu_st->input_dialog_keyboard_buffer,
          &input_st->keyboard_line.size,
+         &input_st->keyboard_line.ptr,
          msg_hash_to_str(MENU_ENUM_LABEL_VALUE_SEARCH),
          menu_input_search_cb,
          menu);
@@ -8334,6 +8336,7 @@ bool menu_input_dialog_start(menu_input_ctx_line_t *line)
    ios_keyboard_start(
          (char **)menu_st->input_dialog_keyboard_buffer,
          &input_st->keyboard_line.size,
+         &input_st->keyboard_line.ptr,
          line->label,
          line->cb,
          menu);

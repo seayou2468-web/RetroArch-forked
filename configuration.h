@@ -383,6 +383,7 @@ typedef struct settings
       unsigned video_shader_subframes;
       unsigned video_autoswitch_refresh_rate;
       unsigned video_hdr_subpixel_layout;
+      unsigned video_hdr_expand_gamut;
 
       unsigned quit_on_close_content;
 
@@ -512,6 +513,7 @@ typedef struct settings
       char midi_driver[32];
       char midi_input[32];
       char midi_output[32];
+      char ai_service_backend[32];
 #ifdef HAVE_LAKKA
       char cpu_main_gov[32];
       char cpu_menu_gov[32];
@@ -688,7 +690,6 @@ typedef struct settings
       bool video_wiiu_prefer_drc;
       bool video_notch_write_over_enable;
       bool video_hdr_enable;
-      bool video_hdr_expand_gamut;
       bool video_hdr_scanlines;
       bool video_use_metal_arg_buffers;
 

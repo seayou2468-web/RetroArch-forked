@@ -720,13 +720,13 @@ static void d3d12_init_texture(D3D12Device device, d3d12_texture_t* texture)
    if (!texture->desc.MipLevels)
       texture->desc.MipLevels          = 1;
 
-   /* Calculate mipmap count */
-   if (texture->desc.Width > 1 || texture->desc.Height > 1)
+   if (   !(texture->desc.Width  >> (texture->desc.MipLevels - 1))
+       && !(texture->desc.Height >> (texture->desc.MipLevels - 1)))
    {
-      unsigned width                   = texture->desc.Width;
-      unsigned height                  = texture->desc.Height;
+      unsigned width                   = texture->desc.Width >> 5;
+      unsigned height                  = texture->desc.Height >> 5;
       texture->desc.MipLevels          = 1;
-      while ((width > 1) || (height > 1))
+      while (width && height)
       {
          width  >>= 1;
          height >>= 1;
@@ -835,11 +835,33 @@ static void d3d12_init_texture(D3D12Device device, d3d12_texture_t* texture)
    texture->size_data.w = 1.0f / texture->desc.Height;
 }
 
-static void d3d12_generate_mipmaps(
-      D3D12GraphicsCommandList cmd,
-      d3d12_texture_t* texture,
-      void *userdata)
+static void d3d12_upload_texture(D3D12GraphicsCommandList cmd,
+      d3d12_texture_t* texture, void *userdata)
 {
+   D3D12_TEXTURE_COPY_LOCATION src, dst;
+
+   src.pResource        = texture->upload_buffer;
+   src.Type             = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
+   src.PlacedFootprint  = texture->layout;
+
+   dst.pResource        = texture->handle;
+   dst.Type             = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
+   dst.SubresourceIndex = 0;
+
+   D3D12_RESOURCE_TRANSITION(
+         cmd,
+         texture->handle,
+         D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+         D3D12_RESOURCE_STATE_COPY_DEST);
+
+   cmd->lpVtbl->CopyTextureRegion(cmd, &dst, 0, 0, 0, &src, NULL);
+
+   D3D12_RESOURCE_TRANSITION(
+         cmd,
+         texture->handle,
+         D3D12_RESOURCE_STATE_COPY_DEST,
+         D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+
    if (texture->desc.MipLevels > 1)
    {
       unsigned       i;
@@ -893,37 +915,6 @@ static void d3d12_generate_mipmaps(
          }
       }
    }
-}
-
-static void d3d12_upload_texture(D3D12GraphicsCommandList cmd,
-      d3d12_texture_t* texture, void *userdata)
-{
-   D3D12_TEXTURE_COPY_LOCATION src, dst;
-
-   src.pResource        = texture->upload_buffer;
-   src.Type             = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
-   src.PlacedFootprint  = texture->layout;
-
-   dst.pResource        = texture->handle;
-   dst.Type             = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
-   dst.SubresourceIndex = 0;
-
-   D3D12_RESOURCE_TRANSITION(
-         cmd,
-         texture->handle,
-         D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-         D3D12_RESOURCE_STATE_COPY_DEST);
-
-   cmd->lpVtbl->CopyTextureRegion(cmd, &dst, 0, 0, 0, &src, NULL);
-
-   D3D12_RESOURCE_TRANSITION(
-         cmd,
-         texture->handle,
-         D3D12_RESOURCE_STATE_COPY_DEST,
-         D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-
-   d3d12_generate_mipmaps(cmd, texture, userdata);
-
    texture->dirty = false;
 }
 
@@ -1887,17 +1878,17 @@ static void d3d12_set_hdr_paper_white_nits(void* data, float paper_white_nits)
    }
 }
 
-static void d3d12_set_hdr_expand_gamut(void* data, bool expand_gamut)
+static void d3d12_set_hdr_expand_gamut(void* data, unsigned expand_gamut)
 {
    d3d12_video_t *d3d12                   = (d3d12_video_t*)data;
 
-   d3d12->hdr.ubo_values.expand_gamut     = expand_gamut ? 1.0f : 0.0f;
+   d3d12->hdr.ubo_values.expand_gamut     = expand_gamut;
    
    if(d3d12->shader_preset)
    {
       for (unsigned i = 0; i < d3d12->shader_preset->passes; i++)
       {
-         d3d12->pass[i].expand_gamut     = expand_gamut ? 1.0f : 0.0f;
+         d3d12->pass[i].expand_gamut     = expand_gamut;
       }
    }
 }
@@ -3505,7 +3496,7 @@ static void *d3d12_gfx_init(const video_info_t* video,
 
    d3d12->hdr.ubo_values.subpixel_layout     = settings->uints.video_hdr_subpixel_layout;
    d3d12->hdr.ubo_values.scanlines           = settings->bools.video_hdr_scanlines;
-   d3d12->hdr.ubo_values.expand_gamut        = settings->bools.video_hdr_expand_gamut;
+   d3d12->hdr.ubo_values.expand_gamut        = settings->uints.video_hdr_expand_gamut;
 
    d3d12->hdr.ubo_values.inverse_tonemap     = 1.0f;     /* Use this to turn on/off the inverse tonemap */
    d3d12->hdr.ubo_values.hdr10               = 1.0f;     /* Use this to turn on/off the hdr10 */
@@ -3715,8 +3706,6 @@ static void d3d12_init_render_targets(d3d12_video_t* d3d12, unsigned width, unsi
          d3d12->pass[i].rt.desc.Flags      = D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
          d3d12->pass[i].rt.srv_heap        = &d3d12->desc.srv_heap;
          d3d12->pass[i].rt.desc.Format = glslang_format_to_dxgi(d3d12->pass[i].semantics.format);
-         /* Initialize MipLevels so mipmaps are created for render target */
-         d3d12->pass[i].rt.desc.MipLevels = 0;
          d3d12_release_texture(&d3d12->pass[i].rt);
          d3d12_init_texture(d3d12->device, &d3d12->pass[i].rt);
 
@@ -4185,7 +4174,7 @@ static bool d3d12_gfx_frame(
             d3d12->pass[i].max_nits             = settings->floats.video_hdr_max_nits;
             d3d12->pass[i].scanlines            = settings->bools.video_hdr_scanlines ? 1.0f : 0.0f;
             d3d12->pass[i].subpixel_layout      = settings->uints.video_hdr_subpixel_layout;
-            d3d12->pass[i].expand_gamut         = settings->bools.video_hdr_expand_gamut ? 1.0f : 0.0f;
+            d3d12->pass[i].expand_gamut         = settings->uints.video_hdr_expand_gamut;
          }
 #endif /* HAVE_DXGI_HDR */ 
 
@@ -4365,9 +4354,6 @@ static bool d3d12_gfx_frame(
                   d3d12->pass[i].rt.handle,
                   D3D12_RESOURCE_STATE_RENDER_TARGET,
                   D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-
-            /* Generate mipmaps for framebuffer if it has multiple mipmap levels */
-            d3d12_generate_mipmaps(cmd, &d3d12->pass[i].rt, d3d12);
             texture = &d3d12->pass[i].rt;
          }
          else

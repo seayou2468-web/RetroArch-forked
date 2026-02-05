@@ -11933,6 +11933,10 @@ MSG_HASH(
    "Material UI sötét"
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_MATERIALUI_MENU_COLOR_THEME_DRACULA,
+   "Drakula"
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_MATERIALUI_MENU_TRANSITION_ANIM_AUTO,
    "Automatikus"
    )
@@ -15953,10 +15957,6 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_SMB_CLIENT_ENABLE,
    "SMB kliens engedélyezése"
-   )
-MSG_HASH(
-   MENU_ENUM_SUBLABEL_SMB_CLIENT_ENABLE,
-   "SMB kliens engedélyezése hálózati megosztáshoz hozzáféréshez. A wifi helyett vezetékes összeköttetés erősen ajánlott a megbízhatóbb kapcsolathoz."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_SMB_CLIENT_SERVER,

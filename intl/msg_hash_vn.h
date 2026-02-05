@@ -2732,7 +2732,23 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_VIDEO_HDR_EXPAND_GAMUT,
-   "Dùng toàn bộ dải màu của màn hình để tạo hình ảnh sáng hơn, rực hơn. Muốn màu sắc trung thực với thiết kế gốc của game thì để OFF."
+   "Sử dụng dải màu đầy đủ của màn hình để tạo ra hình ảnh sáng hơn, bão hòa hơn. Để có màu sắc trung thực hơn với thiết kế trò chơi gốc, hãy đặt tùy chọn này thành CHÍNH XÁC."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_VIDEO_HDR_EXPAND_GAMUT_ACCURATE,
+   "CHÍNH XÁC"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_VIDEO_HDR_EXPAND_GAMUT_EXPANDED,
+   "MỞ RỘNG"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_VIDEO_HDR_EXPAND_GAMUT_WIDE,
+   "RỘNG"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_VIDEO_HDR_EXPAND_GAMUT_SUPER,
+   "TỐI ĐA"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_VIDEO_HDR_SCANLINES,
@@ -7303,6 +7319,14 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_SUBLABEL_AI_SERVICE_MODE,
    "Hiển thị bản dịch dưới dạng lớp chữ (Chế độ Hình ảnh), phát bằng giọng đọc tự động (Giọng nói), hoặc dùng trình đọc màn hình hệ thống như NVDA (Người đọc)."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_AI_SERVICE_BACKEND,
+   "Hệ thống dịch vụ nền AI"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_AI_SERVICE_BACKEND,
+   "Chọn hệ thống dịch thuật. HTTP sử dụng máy chủ từ xa theo URL đã thiết lập. Apple dùng OCR và dịch thuật ngay trên thiết bị (macOS/iOS)."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_AI_SERVICE_URL,
@@ -16460,7 +16484,7 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_SMB_CLIENT_ENABLE,
-   "Bật quyền truy cập chia sẻ mạng SMB. Khuyến nghị dùng mạng dây (Ethernet) thay vì Wi-Fi để có kết nối ổn định hơn."
+   "Cho phép truy cập chia sẻ mạng SMB. Khuyến khích sử dụng Ethernet qua Wi-Fi để có kết nối đáng tin cậy hơn. Lưu ý: việc thay đổi các cài đặt này yêu cầu khởi động lại RetroArch."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_SMB_CLIENT_SERVER,

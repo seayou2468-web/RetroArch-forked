@@ -2743,10 +2743,6 @@ MSG_HASH(
    "색역 확장"
    )
 MSG_HASH(
-   MENU_ENUM_SUBLABEL_VIDEO_HDR_EXPAND_GAMUT,
-   "디스플레이의 전체 색역을 사용하여 더욱 밝고 진한 색의 이미지를 표시합니다. 원래 게임이 의도한 디자인에 가까운 색을 원한다면 이 설정을 끄십시오."
-   )
-MSG_HASH(
    MENU_ENUM_LABEL_VALUE_VIDEO_HDR_SCANLINES,
    "스캔라인"
    )
@@ -12457,6 +12453,10 @@ MSG_HASH(
    "밝은 회색"
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_MATERIALUI_MENU_COLOR_THEME_DRACULA,
+   "드라큘라"
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_MATERIALUI_MENU_TRANSITION_ANIM_AUTO,
    "자동"
    )
@@ -16513,10 +16513,6 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_SMB_CLIENT_ENABLE,
    "SMB 클라이언트 사용"
-   )
-MSG_HASH(
-   MENU_ENUM_SUBLABEL_SMB_CLIENT_ENABLE,
-   "SMB 네트워크 공유에 접근할 수 있게 합니다. 안정적인 연결을 위해 Wi-Fi 대신 이더넷을 사용하는 것이 권장됩니다."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_SMB_CLIENT_SERVER,

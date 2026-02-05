@@ -53,6 +53,7 @@
 
 #include "tasks/task_content.h"
 #include "tasks/tasks_internal.h"
+#include "accessibility.h"
 
 #include "list_special.h"
 
@@ -1556,6 +1557,7 @@ static struct config_array_setting *populate_settings_array(
    SETTING_ARRAY("midi_driver",                  settings->arrays.midi_driver, false, NULL, true);
    SETTING_ARRAY("midi_input",                   settings->arrays.midi_input, true, DEFAULT_MIDI_INPUT, true);
    SETTING_ARRAY("midi_output",                  settings->arrays.midi_output, true, DEFAULT_MIDI_OUTPUT, true);
+   SETTING_ARRAY("ai_service_backend",           settings->arrays.ai_service_backend, false, NULL, true);
 
    SETTING_ARRAY("video_driver",                 settings->arrays.video_driver, false, NULL, true);
    SETTING_ARRAY("video_context_driver",         settings->arrays.video_context_driver, false, NULL, true);
@@ -1918,7 +1920,6 @@ static struct config_bool_setting *populate_settings_bool(
    SETTING_BOOL("video_force_srgb_disable",      &settings->bools.video_force_srgb_disable, true, false, false);
    SETTING_BOOL("video_fullscreen",              &settings->bools.video_fullscreen, true, DEFAULT_FULLSCREEN, false);
    SETTING_BOOL("video_hdr_enable",              &settings->bools.video_hdr_enable, true, DEFAULT_VIDEO_HDR_ENABLE, false);
-   SETTING_BOOL("video_hdr_expand_gamut",        &settings->bools.video_hdr_expand_gamut, true, DEFAULT_VIDEO_HDR_EXPAND_GAMUT, false);
    SETTING_BOOL("video_hdr_scanlines",           &settings->bools.video_hdr_scanlines, true, DEFAULT_VIDEO_HDR_SCANLINES, false);
    SETTING_BOOL("video_vsync",                   &settings->bools.video_vsync, true, DEFAULT_VSYNC, false);
    SETTING_BOOL("video_adaptive_vsync",          &settings->bools.video_adaptive_vsync, true, DEFAULT_ADAPTIVE_VSYNC, false);
@@ -2558,7 +2559,8 @@ static struct config_uint_setting *populate_settings_uint(
    SETTING_UINT("video_record_scale_factor",     &settings->uints.video_record_scale_factor, true, 1, false);
    SETTING_UINT("video_stream_scale_factor",     &settings->uints.video_stream_scale_factor, true, 1, false);
 
-   SETTING_UINT("video_hdr_subpixel_layout",    &settings->uints.video_hdr_subpixel_layout, true, DEFAULT_VIDEO_HDR_SUBPIXEL_LAYOUT, false);
+   SETTING_UINT("video_hdr_subpixel_layout",     &settings->uints.video_hdr_subpixel_layout, true, DEFAULT_VIDEO_HDR_SUBPIXEL_LAYOUT, false);
+   SETTING_UINT("video_hdr_expand_gamut",        &settings->uints.video_hdr_expand_gamut, true, DEFAULT_VIDEO_HDR_EXPAND_GAMUT, false);
 #ifdef HAVE_NETWORKING
    SETTING_UINT("streaming_mode",                &settings->uints.streaming_mode, true, STREAMING_MODE_TWITCH, false);
 #endif
@@ -2855,6 +2857,9 @@ void config_set_defaults(void *data)
    const char *def_location         = config_get_default_location();
    const char *def_record           = config_get_default_record();
    const char *def_midi             = config_get_default_midi();
+#ifdef HAVE_TRANSLATE
+   const char *def_ai_service_backend = config_get_default_ai_service_backend();
+#endif
    const char *def_mitm             = DEFAULT_NETPLAY_MITM_SERVER;
    struct video_viewport *custom_vp = &settings->video_vp_custom;
    struct config_float_setting      *float_settings = populate_settings_float (settings, &float_settings_size);
@@ -2938,6 +2943,12 @@ void config_set_defaults(void *data)
       configuration_set_string(settings,
             settings->arrays.cloud_sync_driver,
             def_cloudsync);
+#ifdef HAVE_TRANSLATE
+   if (def_ai_service_backend)
+      configuration_set_string(settings,
+            settings->arrays.ai_service_backend,
+            def_ai_service_backend);
+#endif
    if (def_location)
       configuration_set_string(settings,
             settings->arrays.location_driver,
